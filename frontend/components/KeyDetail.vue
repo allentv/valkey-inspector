@@ -42,7 +42,7 @@ const deleteKey = () => {
 </script>
 
 <template>
-  <div v-if="!keyName" class="flex items-center justify-center h-full text-gray-400 bg-gray-50">
+  <div v-if="!keyName" class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-900">
     <div class="text-center">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +50,7 @@ const deleteKey = () => {
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        class="w-16 h-16 mx-auto mb-4 text-gray-300"
+        class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600"
       >
         <path
           stroke-linecap="round"
@@ -62,23 +62,23 @@ const deleteKey = () => {
     </div>
   </div>
 
-  <div v-else-if="pending" class="flex items-center justify-center h-full text-gray-500">
-    <div class="animate-pulse flex flex-col items-center">
-      <div class="h-8 w-32 bg-gray-200 rounded mb-4"></div>
-      <div class="h-64 w-full max-w-lg bg-gray-200 rounded"></div>
+  <div v-else-if="pending" class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+    <div class="animate-pulse flex flex-col items-center dark:opacity-50">
+      <div class="h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
+      <div class="h-64 w-full max-w-lg bg-gray-200 dark:bg-gray-700 rounded"></div>
     </div>
   </div>
 
-  <div v-else-if="keyData" class="flex flex-col h-full bg-gray-50">
+  <div v-else-if="keyData" class="flex flex-col h-full bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
-    <div class="p-6 border-b border-gray-200 bg-white flex justify-between items-start shadow-sm z-10">
+    <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex justify-between items-start shadow-sm z-10">
       <div class="overflow-hidden mr-4 flex-1">
         <div class="flex items-center gap-2 mb-2">
-          <h2 class="text-xl font-mono font-bold text-gray-900 truncate" :title="keyName">
+          <h2 class="text-xl font-mono font-bold text-gray-900 dark:text-white truncate" :title="keyName">
             {{ keyName }}
           </h2>
           <button
-            class="text-gray-400 hover:text-blue-600 transition-colors p-1 rounded hover:bg-blue-50"
+            class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors p-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30"
             title="Copy Key Name"
             @click="copyToClipboard"
           >
@@ -99,18 +99,18 @@ const deleteKey = () => {
           </button>
         </div>
 
-        <div class="flex items-center gap-4 text-sm text-gray-500">
-          <span class="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
-            <span class="font-medium text-gray-700">Type:</span> {{ keyData?.type?.toUpperCase() }}
+        <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+          <span class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
+            <span class="font-medium text-gray-700 dark:text-gray-300">Type:</span> {{ keyData?.type?.toUpperCase() }}
           </span>
-          <span class="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
-            <span class="font-medium text-gray-700">TTL:</span> {{ keyData?.ttl }}s
+          <span class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
+            <span class="font-medium text-gray-700 dark:text-gray-300">TTL:</span> {{ keyData?.ttl }}s
           </span>
         </div>
       </div>
 
       <button
-        class="px-3 py-1.5 bg-white text-red-600 text-sm font-medium rounded hover:bg-red-50 transition-colors border border-red-200 shadow-sm"
+        class="px-3 py-1.5 bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 text-sm font-medium rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border border-red-200 dark:border-red-800 shadow-sm"
         @click="deleteKey"
       >
         Delete
@@ -126,7 +126,7 @@ const deleteKey = () => {
         :data="keyData.value"
         :type="keyData.type"
       />
-      <div v-else class="text-gray-500 italic">Unsupported type: {{ keyData.type }}</div>
+      <div v-else class="text-gray-500 dark:text-gray-400 italic">Unsupported type: {{ keyData.type }}</div>
     </div>
   </div>
 </template>
