@@ -9,20 +9,28 @@ const props = defineProps<{
 
 const { selectedDb } = useKeys()
 
-const { data: keyData, pending, refresh } = useFetch(() => `/api/keys/${encodeURIComponent(props.keyName || '')}`, {
+const {
+  data: keyData,
+  pending,
+  refresh,
+} = useFetch(() => `/api/keys/${encodeURIComponent(props.keyName || '')}`, {
   params: {
-    db: selectedDb
+    db: selectedDb,
   },
   immediate: false,
-  watch: [() => props.keyName]
+  watch: [() => props.keyName],
 })
 
 // Trigger fetch when keyName changes and is present
-watch(() => props.keyName, (newVal) => {
-  if (newVal) {
-    refresh()
-  }
-}, { immediate: true })
+watch(
+  () => props.keyName,
+  (newVal) => {
+    if (newVal) {
+      refresh()
+    }
+  },
+  { immediate: true },
+)
 
 const copyToClipboard = () => {
   if (props.keyName) {
@@ -42,7 +50,10 @@ const deleteKey = () => {
 </script>
 
 <template>
-  <div v-if="!keyName" class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-900">
+  <div
+    v-if="!keyName"
+    class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-900"
+  >
     <div class="text-center">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +82,9 @@ const deleteKey = () => {
 
   <div v-else-if="keyData" class="flex flex-col h-full bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
-    <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex justify-between items-start shadow-sm z-10">
+    <div
+      class="p-6 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex justify-between items-start shadow-sm z-10"
+    >
       <div class="overflow-hidden mr-4 flex-1">
         <div class="flex items-center gap-2 mb-2">
           <h2 class="text-xl font-mono font-bold text-gray-900 dark:text-white truncate" :title="keyName">

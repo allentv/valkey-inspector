@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 const props = defineProps<{
   name: string
@@ -30,16 +30,25 @@ const typeLabel = computed(() => props.type.toUpperCase().slice(0, 3))
 </script>
 
 <template>
-  <div class="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors group">
+  <div
+    class="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors group"
+  >
     <div class="flex items-center gap-2 overflow-hidden">
       <!-- Type Badge -->
       <span :class="['px-2 py-0.5 text-xs font-bold rounded min-w-[3rem] text-center', badgeClass]">
         {{ typeLabel }}
       </span>
       <!-- Key Name -->
-      <span class="truncate font-mono text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white" :title="name">{{ name }}</span>
+      <span
+        class="truncate font-mono text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white"
+        :title="name"
+        >{{ name }}</span
+      >
     </div>
     <!-- TTL Indicator -->
-    <div :class="['w-2 h-2 rounded-full flex-shrink-0', ttlClass]" :title="ttl === -1 ? 'Persistent' : 'Volatile'"></div>
+    <div
+      :class="['w-2 h-2 rounded-full flex-shrink-0', ttlClass]"
+      :title="ttl === -1 ? 'Persistent' : 'Volatile'"
+    ></div>
   </div>
 </template>

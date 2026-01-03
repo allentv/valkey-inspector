@@ -4,7 +4,8 @@ export const useTheme = () => {
   const initTheme = () => {
     if (import.meta.client) {
       const stored = localStorage.getItem('theme')
-      if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      if (stored === 'dark' || (!stored && systemDark)) {
         isDark.value = true
         document.documentElement.classList.add('dark')
       } else {
