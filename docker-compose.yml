@@ -1,0 +1,29 @@
+services:
+  valkey:
+    image: valkey/valkey:alpine
+    container_name: valkey-inspector-valkey
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./init-valkey.sh:/init-valkey.sh
+    # Start server in background, run init script, shutdown, then restart in foreground
+    command: >
+      sh -c "valkey-server --daemonize yes && sleep 2 && sh /init-valkey.sh && valkey-cli shutdown && valkey-server --appendonly yes"
+
+  backend:
+    build: ./backend
+    container_name: valkey-inspector-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - VALKEY_ADDR=valkey:6379
+    depends_on:
+      - valkey
+
+  # Frontend service will be added in Phase 2
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - backend
