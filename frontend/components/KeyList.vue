@@ -1,25 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
-const searchPattern = ref('*')
-const selectedDb = ref(0)
 const databases = Array.from({ length: 16 }, (_, i) => i)
 
-// Placeholder data until API integration
-const keys = ref([
-  { name: 'user:1001:session', type: 'string', ttl: 300 },
-  { name: 'user:1001:cart', type: 'hash', ttl: -1 },
-  { name: 'system:logs', type: 'list', ttl: -1 },
-  { name: 'leaderboard:2023', type: 'zset', ttl: 3600 },
-])
+const { keys, loading, selectedDb, searchPattern, hasMore, selectedKey, fetchKeys } = useKeys()
 
 const loadMore = () => {
-  console.log('Load more keys...')
+  fetchKeys(false)
 }
 
 const refreshKeys = () => {
-  console.log(`Refreshing keys for DB ${selectedDb.value} with pattern ${searchPattern.value}`)
+  fetchKeys(true)
 }
+
+// Initial load
+onMounted(() => {
+  if (keys.value.length === 0) {
+    refreshKeys()
+  }
+})
 </script>
 
 <template>
@@ -51,13 +48,35 @@ const refreshKeys = () => {
 
     <!-- Key List -->
     <div class="flex-1 overflow-y-auto">
-      <div v-if="keys.length === 0" class="p-4 text-center text-gray-500 text-sm">No keys found.</div>
-
-      <KeyListItem v-for="key in keys" :key="key.name" :name="key.name" :type="key.type" :ttl="key.ttl" />
-
-      <div class="p-4 text-center">
-        <button class="text-xs text-blue-600 hover:text-blue-800 font-medium" @click="loadMore">Load More...</button>
+      <!-- Skeleton Loader -->
+      <div v-if="loading && keys.length === 0" class="p-4 space-y-3">
+        <div v-for="i in 5" :key="i" class="animate-pulse flex justify-between items-center">
+          <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+          <div class="h-4 bg-gray-200 rounded w-8"></div>
+        </div>
       </div>
+
+      <div v-else-if="keys.length === 0" class="p-4 text-center text-gray-500 text-sm">No keys found.</div>
+
+      <template v-else>
+        <KeyListItem
+          v-for="key in keys"
+          :key="key.name"
+          v-bind="key"
+          :class="{ 'bg-blue-50': selectedKey === key.name }"
+          @click="selectedKey = key.name"
+        />
+
+        <div v-if="hasMore" class="p-4 text-center">
+          <button
+            class="text-xs text-blue-600 hover:text-blue-800 font-medium disabled:opacity-50"
+            :disabled="loading"
+            @click="loadMore"
+          >
+            {{ loading ? 'Loading...' : 'Load More...' }}
+          </button>
+        </div>
+      </template>
     </div>
   </div>
 </template>

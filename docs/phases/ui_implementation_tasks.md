@@ -18,7 +18,7 @@ Based on the [UI/UX Design Concepts](./ui_ux_design.md), this document outlines 
     - Implement Tailwind styling for the "compact list" look (hover effects, cursor pointer).
     - Add dynamic badges for types (String, Hash, List, Set, ZSet) using specific color classes.
     - Add a visual indicator for TTL (e.g., Green dot for persistent, Yellow for volatile).
-- [ ] **Infinite Scroll / Pagination**:
+- [x] **Infinite Scroll / Pagination**:
     - Update `components/KeyList.vue` to handle `cursor`-based pagination.
     - Implement a "Load More" button or use an Intersection Observer for infinite scroll.
     - **Backend Update**: Ensure `GET /api/keys` accepts `cursor` and returns `next_cursor`.
@@ -42,7 +42,7 @@ Based on the [UI/UX Design Concepts](./ui_ux_design.md), this document outlines 
         - Implement a virtualized list or internal pagination for large collections.
 
 ## 4. State Management & Polish
-- [ ] **Composables**:
+- [x] **Composables**:
     - Create `composables/useKeys.ts` to manage the list state, cursor, and loading status.
-- [ ] **Loading States**: Add skeleton loaders (pulsing gray bars) for the Key List and Detail view while fetching data.
+- [x] **Loading States**: Add skeleton loaders (pulsing gray bars) for the Key List and Detail view while fetching data.
 - [x] **Empty States**: Design a "Select a key to view details" placeholder for the right pane.

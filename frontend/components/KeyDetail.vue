@@ -2,22 +2,35 @@
 import StringViewer from './viewers/StringViewer.vue'
 import HashViewer from './viewers/HashViewer.vue'
 import CollectionViewer from './viewers/CollectionViewer.vue'
-import { ref } from 'vue'
 
 const props = defineProps<{
   keyName?: string
 }>()
 
-// Mock data state (to be replaced by API call in Task #4)
-// This allows us to preview the UI without the backend ready yet
-const keyData = ref({
-  type: 'string',
-  ttl: 300,
-  value: '{"user_id": 1001, "name": "Alice", "roles": ["admin", "editor"], "last_login": "2023-10-27T10:00:00Z"}',
-  // Uncomment to test other types:
-  // type: 'hash', value: { "username": "alice", "email": "alice@example.com", "credits": "50" },
-  // type: 'list', value: ["Log entry 1", "Log entry 2", "Log entry 3"],
+const { selectedDb } = useKeys()
+
+const {
+  data: keyData,
+  pending,
+  refresh,
+} = useFetch(() => `/api/keys/${encodeURIComponent(props.keyName || '')}`, {
+  params: {
+    db: selectedDb,
+  },
+  immediate: false,
+  watch: [() => props.keyName],
 })
+
+// Trigger fetch when keyName changes and is present
+watch(
+  () => props.keyName,
+  (newVal) => {
+    if (newVal) {
+      refresh()
+    }
+  },
+  { immediate: true },
+)
 
 const copyToClipboard = () => {
   if (props.keyName) {
@@ -28,7 +41,9 @@ const copyToClipboard = () => {
 
 const deleteKey = () => {
   if (confirm(`Are you sure you want to delete ${props.keyName}?`)) {
-    console.log('Deleting key...')
+    // Implement delete logic here or via composable
+    // await useFetch(`/api/keys/${props.keyName}`, { method: 'DELETE', params: { db: selectedDb.value } })
+    // refreshKeys() // from useKeys
   }
 }
 </script>
@@ -54,7 +69,14 @@ const deleteKey = () => {
     </div>
   </div>
 
-  <div v-else class="flex flex-col h-full bg-gray-50">
+  <div v-else-if="pending" class="flex items-center justify-center h-full text-gray-500">
+    <div class="animate-pulse flex flex-col items-center">
+      <div class="h-8 w-32 bg-gray-200 rounded mb-4"></div>
+      <div class="h-64 w-full max-w-lg bg-gray-200 rounded"></div>
+    </div>
+  </div>
+
+  <div v-else-if="keyData" class="flex flex-col h-full bg-gray-50">
     <!-- Header -->
     <div class="p-6 border-b border-gray-200 bg-white flex justify-between items-start shadow-sm z-10">
       <div class="overflow-hidden mr-4 flex-1">
@@ -86,10 +108,10 @@ const deleteKey = () => {
 
         <div class="flex items-center gap-4 text-sm text-gray-500">
           <span class="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
-            <span class="font-medium text-gray-700">Type:</span> {{ keyData.type.toUpperCase() }}
+            <span class="font-medium text-gray-700">Type:</span> {{ keyData?.type?.toUpperCase() }}
           </span>
           <span class="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
-            <span class="font-medium text-gray-700">TTL:</span> {{ keyData.ttl }}s
+            <span class="font-medium text-gray-700">TTL:</span> {{ keyData?.ttl }}s
           </span>
         </div>
       </div>
@@ -104,12 +126,12 @@ const deleteKey = () => {
 
     <!-- Content -->
     <div class="flex-1 overflow-y-auto p-6">
-      <StringViewer v-if="keyData.type === 'string'" :value="keyData.value as string" />
-      <HashViewer v-else-if="keyData.type === 'hash'" :data="keyData.value as Record<string, string>" />
+      <StringViewer v-if="keyData.type === 'string'" :value="keyData.value" />
+      <HashViewer v-else-if="keyData.type === 'hash'" :data="keyData.value" />
       <CollectionViewer
         v-else-if="['list', 'set', 'zset'].includes(keyData.type)"
-        :data="keyData.value as string[]"
-        :type="keyData.type as any"
+        :data="keyData.value"
+        :type="keyData.type"
       />
       <div v-else class="text-gray-500 italic">Unsupported type: {{ keyData.type }}</div>
     </div>
