@@ -9,28 +9,20 @@ const props = defineProps<{
 
 const { selectedDb } = useKeys()
 
-const {
-  data: keyData,
-  pending,
-  refresh,
-} = useFetch(() => `/api/keys/${encodeURIComponent(props.keyName || '')}`, {
+const { data: keyData, pending, refresh } = useFetch(() => `/api/keys/${encodeURIComponent(props.keyName || '')}`, {
   params: {
-    db: selectedDb,
+    db: selectedDb
   },
   immediate: false,
-  watch: [() => props.keyName],
+  watch: [() => props.keyName]
 })
 
 // Trigger fetch when keyName changes and is present
-watch(
-  () => props.keyName,
-  (newVal) => {
-    if (newVal) {
-      refresh()
-    }
-  },
-  { immediate: true },
-)
+watch(() => props.keyName, (newVal) => {
+  if (newVal) {
+    refresh()
+  }
+}, { immediate: true })
 
 const copyToClipboard = () => {
   if (props.keyName) {
@@ -41,9 +33,10 @@ const copyToClipboard = () => {
 
 const deleteKey = () => {
   if (confirm(`Are you sure you want to delete ${props.keyName}?`)) {
-    // Implement delete logic here or via composable
+    // TODO: Backend Integration - Delete Key
+    // Need to implement DELETE /api/keys/{key} endpoint
     // await useFetch(`/api/keys/${props.keyName}`, { method: 'DELETE', params: { db: selectedDb.value } })
-    // refreshKeys() // from useKeys
+    console.log('TODO: Delete key', props.keyName)
   }
 }
 </script>

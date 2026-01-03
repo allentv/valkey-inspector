@@ -31,6 +31,8 @@ export const useKeys = () => {
     }
 
     try {
+      // TODO: Backend Integration - Pass connection details
+      // We need to pass connection.host, connection.port, etc. via headers or a session cookie
       const { data, error } = await useFetch<ScanResponse>('/api/keys', {
         params: {
           cursor: cursor.value,
