@@ -34,6 +34,7 @@ func (s Server) Start() {
 	// Middleware for CORS
 	handler := s.enableCORS(mux)
 
+	log.Println("Starting Valkey Inspector Backend on :8080")
 	if err := http.ListenAndServe(":8080", handler); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
