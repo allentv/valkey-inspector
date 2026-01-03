@@ -13,6 +13,7 @@ const {
   data: keyData,
   pending,
   refresh,
+  error,
 } = useFetch(() => `/api/keys/${encodeURIComponent(props.keyName || '')}`, {
   params: {
     db: selectedDb,
@@ -77,6 +78,33 @@ const deleteKey = () => {
     <div class="animate-pulse flex flex-col items-center dark:opacity-50">
       <div class="h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
       <div class="h-64 w-full max-w-lg bg-gray-200 dark:bg-gray-700 rounded"></div>
+    </div>
+  </div>
+
+  <div v-else-if="error" class="flex items-center justify-center h-full text-red-500 dark:text-red-400 p-8">
+    <div class="text-center max-w-md">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-12 h-12 mx-auto mb-4 opacity-80"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+        />
+      </svg>
+      <h3 class="text-lg font-medium mb-2">Error Loading Key</h3>
+      <p class="text-sm opacity-80 mb-6">{{ error.message }}</p>
+      <button
+        class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        @click="refresh"
+      >
+        Retry
+      </button>
     </div>
   </div>
 

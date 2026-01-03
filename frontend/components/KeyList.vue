@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const databases = Array.from({ length: 16 }, (_, i) => i)
 
-const { keys, loading, selectedDb, searchPattern, hasMore, selectedKey, fetchKeys } = useKeys()
+const { keys, loading, selectedDb, searchPattern, hasMore, selectedKey, error, fetchKeys } = useKeys()
 const { connection, disconnect } = useConnection()
 const { isDark, toggleTheme } = useTheme()
 const router = useRouter()
@@ -122,6 +122,29 @@ onMounted(() => {
         >
           <option v-for="db in databases" :key="db" :value="db">DB {{ db }}</option>
         </select>
+      </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div v-if="error" class="p-4 bg-red-50 dark:bg-red-900/20 border-b border-red-100 dark:border-red-800">
+      <div class="flex flex-col gap-2 text-red-700 dark:text-red-400 text-sm">
+        <div class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="font-medium">Failed to load keys</span>
+        </div>
+        <p class="text-xs opacity-90">{{ error.message }}</p>
+        <button
+          class="text-xs font-semibold underline hover:text-red-800 dark:hover:text-red-300 self-start"
+          @click="refreshKeys"
+        >
+          Try Again
+        </button>
       </div>
     </div>
 

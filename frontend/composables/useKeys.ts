@@ -18,10 +18,12 @@ export const useKeys = () => {
   const loading = useState<boolean>('keysLoading', () => false)
   const hasMore = useState<boolean>('keysHasMore', () => true)
   const selectedKey = useState<string | undefined>('selectedKey', () => undefined)
+  const error = useState<Error | null>('keysError', () => null)
 
   const fetchKeys = async (reset = false) => {
     if (loading.value && !reset) return
     loading.value = true
+    error.value = null
 
     if (reset) {
       cursor.value = 0
@@ -33,7 +35,7 @@ export const useKeys = () => {
     try {
       // TODO: Backend Integration - Pass connection details
       // We need to pass connection.host, connection.port, etc. via headers or a session cookie
-      const { data, error } = await useFetch<ScanResponse>('/api/keys', {
+      const { data, error: fetchError } = await useFetch<ScanResponse>('/api/keys', {
         params: {
           cursor: cursor.value,
           match: searchPattern.value,
@@ -42,14 +44,17 @@ export const useKeys = () => {
         },
       })
 
-      if (error.value) {
-        console.error('Error fetching keys:', error.value)
+      if (fetchError.value) {
+        console.error('Error fetching keys:', fetchError.value)
+        error.value = fetchError.value
       } else if (data.value) {
         const newKeys = data.value.keys || []
         keys.value = reset ? newKeys : [...keys.value, ...newKeys]
         cursor.value = data.value.cursor
         hasMore.value = data.value.cursor !== 0
       }
+    } catch (e) {
+      error.value = e as Error
     } finally {
       loading.value = false
     }
@@ -62,6 +67,7 @@ export const useKeys = () => {
     searchPattern,
     hasMore,
     selectedKey,
+    error,
     fetchKeys,
   }
 }
